@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咨询记录与复盘系统</title>
+    <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-light: #6b8db8;
+            --primary-dark: #2c4a6e;
+            --secondary-color: #f5a623;
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --info-color: #2196f3;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        #app {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        #app-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+        }
+        
+        .loader {
+            border: 5px solid var(--gray-200);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 页面标题和头部 */
+        .page-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .system-title h1 {
+            color: var(--primary-dark);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+        
+        .home-link {
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .home-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 8px;
+            color: var(--gray-400);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 8px 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            color: white;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+        
+        .btn-success {
+            color: white;
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #3d8b40;
+            border-color: #3d8b40;
+        }
+        
+        .btn-warning {
+            color: white;
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e68a00;
+            border-color: #e68a00;
+        }
+        
+        .btn-danger {
+            color: white;
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+        
+        /* 客户管理视图 */
+        .client-manager-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .client-manager-container h2 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .no-clients-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-600);
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+        }
+        
+        .client-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .client-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .client-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .client-info {
+            margin-bottom: 15px;
+        }
+        
+        .client-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+        
+        .client-details {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .client-notes {
+            font-size: 14px;
+            color: var(--gray-700);
+            background-color: var(--gray-100);
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        
+        .client-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* 表单样式 */
+        .add-client-form {
+            background-color: var(--gray-100);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .form-row {
+            margin-bottom: 15px;
+        }
+        
+        .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .form-row input,
+        .form-row select,
+        .form-row textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .form-row input:focus,
+        .form-row select:focus,
+        .form-row textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* 会话管理视图 */
+        .session-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .session-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .session-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .session-item.active {
+            border-left-color: var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+        
+        .session-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+        
+        .session-date {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+        
+        /* 记录视图 */
+        .app-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin: 20px auto;
+            max-width: 1400px;
+        }
+        
+        .record-panel, .preview-panel {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+        }
+        
+        .session-info {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .session-info h2 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        /* 多步骤节点创建 */
+        .multi-step-node-creation {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+        
+        .step-body {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        /* 标签选择器 */
+        .tag-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .tag-group {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 10px;
+        }
+        
+        .tag-label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--gray-700);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tag-selected-count {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 3px;
+            background-color: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .tag:hover {
+            background-color: var(--gray-200);
+        }
+        
+        .tag.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* 描述输入 */
+        .description-input {
+            margin-bottom: 20px;
+        }
+        
+        .description-input textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            resize: vertical;
+        }
+        
+        /* 选择标签摘要 */
+        .selections-summary {
+            background-color: var(--gray-100);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .selections-summary div {
+            margin-bottom: 5px;
+        }
+        
+        .selections-summary strong {
+            color: var(--primary-dark);
+        }
+        
+        /* 预测控制按钮 */
+        .prediction-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .empty-content-note {
+            color: var(--gray-600);
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        /* 预测加载状态 */
+        .prediction-loader-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prediction-loader {
+            width: 100%;
+            height: 4px;
+            background-color: var(--gray-200);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .prediction-loader::after {
+            content: '';
+            display: block;
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            animation: progress 1.5s infinite;
+        }
+        
+        @keyframes progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+        
+        .prediction-status-message {
+            color: var(--gray-700);
+            font-size: 14px;
+        }
+        
+        /* 预测结果区域 */
+        .prediction-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 15px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .prediction-mode {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .mode-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .mode-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .refresh-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: 10px;
+        }
+        
+        .refresh-btn:hover {
+            background-color: var(--gray-300);
+        }
+        
+        .prediction-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .prediction-item:hover {
+            background-color: var(--gray-200);
+        }
+        
+        .prediction-item.selected {
+            background-color: rgba(74, 111, 165, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        /* 步骤操作 */
+        .step-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* 节点列表 */
+        .node-list {
+            margin-top: 20px;
+        }
+        
+        .node-item {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .prediction-path {
+            margin-bottom: 10px;
+        }
+        
+        .path-item {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .path-level {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .path-steps {
+            margin-left: 15px;
+        }
+        
+        .path-step {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        
+        .node-content-display {
+            background-color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .node-timestamp {
+            font-size: 12px;
+            color: var(--gray-500);
+            text-align: right;
+        }
+        
+        /* 事件流时间线 */
+        .event-flow {
+            margin-bottom: 20px;
+        }
+        
+        .event-flow h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .event-flow ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .event-flow li {
+            padding: 15px;
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .dimension-label {
+            background-color: var(--primary-light);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        /* 生成复盘按钮 */
+        .generate-analysis {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .generate-analysis:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .generate-analysis:disabled {
+            background-color: var(--gray-400);
+            cursor: not-allowed;
+        }
+        
+        /* 复盘分析视图 */
+        .analysis-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+        }
+        
+        .analysis-container h2 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .event-timeline {
+            margin-bottom: 30px;
+        }
+        
+        .event-timeline h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .ai-analysis {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        
+        .ai-analysis h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .analysis-content {
+            white-space: pre-line;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-panel {
+                position: relative;
+                height: auto;
+                top: 0;
+            }
+        }
+
+        .node-comment {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 3px solid #6b8db8;
+            border-radius: 4px;
+        }
+        
+        .comment-header {
+            color: #4a6fa5;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .comment-content {
+            font-size: 14px;
+            color: #495057;
+            white-space: pre-line;
+        }
+        
+        .node-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn-icon {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-icon:hover {
+            background-color: #e9ecef;
+        }
+        
+        .btn-icon.delete {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-icon.delete:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #2c4a6e;
+        }
+        
+        .comment-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载指示器 -->
+    <div id="app-loading">
+        <div class="loader"></div>
+        <div>应用正在加载中...</div>
+    </div>
+
+    <!-- 主应用容器 -->
+    <div id="app"></div>
+
+    <script>
+        // 确保Vue可用
+        if (typeof Vue === 'undefined') {
+            document.body.innerHTML = '<div style="text-align:center;padding:40px;"><h2>加载失败</h2><p>Vue库未能加载，请检查网络连接后刷新页面。</p><button onclick="location.reload()">刷新页面</button></div>';
+        } else {
+            const { createApp, ref, computed, onMounted, watch, reactive } = Vue;
+            
+            // 标签数据 - 作为常量
+            const EMOTION_TAGS = [
+                "愤怒", "悲伤", "焦虑", "恐惧", "喜悦", 
+                "羞愧", "内疚", "困惑", "嫉妒", "惊讶"
+            ];
+            
+            const PERSON_TAGS = [
+                "自己", "妈妈", "爸爸", "老师", "同学",
+                "朋友", "兄弟姐妹", "祖父母", "陌生人"
+            ];
+            
+            const TIME_TAGS = [
+                "童年", "幼儿园", "小学", "初中", "高中",
+                "昨天", "今天", "最近", "未来"
+            ];
+            
+            const LOCATION_TAGS = [
+                "家里", "学校", "教室", "操场", "公园",
+                "商场", "医院", "网络空间"
+            ];
+            
+            // 创建应用
+            const app = createApp({
+                template: `
+                    <div>
+                        <!-- 客户管理视图 -->
+                        <div class="client-manager-container" v-if="currentView === 'clientManager'">
+                            <div class="page-header">
+                                <div class="system-title">
+                                    <h1>咨询记录与复盘系统</h1>
+                                </div>
+                            </div>
+                            
+                            <div v-if="!showAddClientForm">
+                                <h2>来访者管理</h2>
+                                <button class="btn btn-primary" @click="showAddClientForm = true">
+                                    添加新来访者
+                                </button>
+                                
+                                <div v-if="clients.length === 0" class="no-clients-message">
+                                    <p>尚未添加任何来访者</p>
+                                    <p>点击"添加新来访者"按钮开始</p>
+                                </div>
+                                
+                                <div class="client-list" v-else>
+                                    <div v-for="client in clients" :key="client.id" class="client-card">
+                                        <div class="client-info">
+                                            <div class="client-name">{{ client.name }}</div>
+                                            <div class="client-details">
+                                                <span>{{ client.gender }}</span>
+                                                <span v-if="client.age">, {{ client.age }}岁</span>
+                                                <span v-if="client.contact">, 联系方式: {{ client.contact }}</span>
+                                            </div>
+                                            <div v-if="client.notes" class="client-notes">
+                                                备注: {{ client.notes }}
+                                            </div>
+                                        </div>
+                                        <div class="client-actions">
+                                            <button class="btn btn-primary" @click="selectClient(client)">
+                                                查看会话
+                                            </button>
+                                            <button class="btn btn-warning" @click="editClient(client)">
+                                                编辑
+                                            </button>
+                                            <button class="btn btn-danger" @click="deleteClient(client)">
+                                                删除
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 添加/编辑来访者表单 -->
+                            <div class="add-client-form" v-if="showAddClientForm">
+                                <h2>{{ editingClient ? '编辑来访者' : '添加新来访者' }}</h2>
+                                <div class="form-row">
+                                    <label for="clientName">姓名</label>
+                                    <input id="clientName" v-model="newClient.name" placeholder="请输入来访者姓名">
+                                </div>
+                                <div class="form-row">
+                                    <label for="clientGender">性别</label>
+                                    <select id="clientGender" v-model="newClient.gender">
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <label for="clientAge">年龄</label>
+                                    <input id="clientAge" type="number" v-model="newClient.age" placeholder="请输入年龄">
+                                </div>
+                                <div class="form-row">
+                                    <label for="clientContact">联系方式 (可选)</label>
+                                    <input id="clientContact" v-model="newClient.contact" placeholder="电话或邮箱等">
+                                </div>
+                                <div class="form-row">
+                                    <label for="clientNotes">备注 (可选)</label>
+                                    <textarea id="clientNotes" v-model="newClient.notes" placeholder="添加备注信息" rows="3"></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-danger" @click="cancelAddClient">取消</button>
+                                    <button 
+                                        class="btn btn-success" 
+                                        @click="saveClient" 
+                                        :disabled="!newClient.name || !newClient.age">
+                                        保存
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 会话管理视图 -->
+                        <div class="client-manager-container" v-else-if="currentView === 'sessionManager'">
+                            <div class="page-header">
+                                <div class="system-title">
+                                    <div class="breadcrumb">
+                                        <span class="home-link" @click="goToClientManager">来访者管理</span>
+                                        <span class="breadcrumb-separator">›</span>
+                                        <span>{{ currentClient.name }}</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" @click="createNewSession">
+                                    新建咨询会话
+                                </button>
+                            </div>
+                            
+                            <h2>{{ currentClient.name }} 的咨询会话</h2>
+                            
+                            <div v-if="clientSessions.length === 0" class="no-clients-message">
+                                <p>尚未为该来访者创建任何会话</p>
+                                <p>点击"新建咨询会话"按钮开始</p>
+                            </div>
+                            
+                            <div class="session-list" v-else>
+                                <div 
+                                    v-for="session in clientSessions" 
+                                    :key="session.id" 
+                                    class="session-item"
+                                    :class="{ active: currentSession && currentSession.id === session.id }"
+                                    @click="openSession(session)">
+                                    <div class="session-title">{{ session.title || '未命名会话' }}</div>
+                                    <div class="session-date">
+                                        {{ new Date(session.date).toLocaleString() }}
+                                        <span v-if="session.nodes && session.nodes.length">
+                                            | {{ session.nodes.length }} 个记录节点
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 记录视图 -->
+                        <div v-else-if="currentView === 'record' && !showAnalysis">
+                            <div class="app-container">
+                                <!-- 左侧面板：节点记录 -->
+                                <div class="record-panel">
+                                    <div class="session-info">
+                                        <div class="breadcrumb">
+                                            <span class="home-link" @click="goToClientManager">来访者管理</span>
+                                            <span class="breadcrumb-separator">›</span>
+                                            <span class="home-link" @click="goToSessionManager">{{ currentClient.name }}</span>
+                                            <span class="breadcrumb-separator">›</span>
+                                            <span>{{ currentSession.title || '未命名会话' }}</span>
+                                        </div>
+                                        <h2>咨询记录</h2>
+                                        <p>来访者：{{ currentClient.name }} ({{ currentClient.gender }}, {{ currentClient.age }}岁)</p>
+                                        <p>{{ formatDate(currentSession.date) }}</p>
+                                        <div v-if="currentClient.notes" class="client-notes">
+                                            备注: {{ currentClient.notes }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 多步骤节点创建 -->
+                                    <div class="multi-step-node-creation">
+                                        <div class="step-header">
+                                            <div class="step-title">
+                                                <div class="step-number">{{ currentStep }}</div>
+                                                <span>{{ getStepTitle(currentStep) }}</span>
+                                            </div>
+                                            <button class="btn" style="color: white;" @click="resetNodeCreation">新节点</button>
+                                        </div>
+                                        
+                                        <!-- 步骤1：基础信息和标签选择 -->
+                                        <div class="step-body" v-if="currentStep === 1">
+                                            <div class="tag-selector">
+                                                <!-- 情绪标签 -->
+                                                <div class="tag-group">
+                                                    <div class="tag-label">
+                                                        情绪标签
+                                                        <span class="tag-selected-count" v-if="nodeData.emotions.length">{{ nodeData.emotions.length }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span 
+                                                            v-for="emotion in emotionTags" 
+                                                            :key="emotion"
+                                                            class="tag"
+                                                            :class="{ selected: nodeData.emotions.includes(emotion) }"
+                                                            @click="toggleTag('emotions', emotion)">
+                                                            {{ emotion }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- 人物标签 -->
+                                                <div class="tag-group">
+                                                    <div class="tag-label">
+                                                        人物标签
+                                                        <span class="tag-selected-count" v-if="nodeData.people.length">{{ nodeData.people.length }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span 
+                                                            v-for="person in personTags" 
+                                                            :key="person"
+                                                            class="tag"
+                                                            :class="{ selected: nodeData.people.includes(person) }"
+                                                            @click="toggleTag('people', person)">
+                                                            {{ person }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- 时间标签 -->
+                                                <div class="tag-group">
+                                                    <div class="tag-label">
+                                                        时间标签
+                                                        <span class="tag-selected-count" v-if="nodeData.times.length">{{ nodeData.times.length }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span 
+                                                            v-for="time in timeTags" 
+                                                            :key="time"
+                                                            class="tag"
+                                                            :class="{ selected: nodeData.times.includes(time) }"
+                                                            @click="toggleTag('times', time)">
+                                                            {{ time }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- 地点标签 -->
+                                                <div class="tag-group">
+                                                    <div class="tag-label">
+                                                        地点标签
+                                                        <span class="tag-selected-count" v-if="nodeData.locations.length">{{ nodeData.locations.length }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span 
+                                                            v-for="location in locationTags" 
+                                                            :key="location"
+                                                            class="tag"
+                                                            :class="{ selected: nodeData.locations.includes(location) }"
+                                                            @click="toggleTag('locations', location)">
+                                                            {{ location }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 描述输入 -->
+                                            <div class="description-input">
+                                                <div class="tag-label">描述 (可选)</div>
+                                                <textarea 
+                                                    v-model="nodeData.description" 
+                                                    placeholder="输入更多描述信息..."></textarea>
+                                            </div>
+                                            
+                                            <!-- 选择标签摘要 -->
+                                            <div class="selections-summary" v-if="hasAnyTagSelected">
+                                                <div v-if="nodeData.emotions.length">
+                                                    <strong>情绪：</strong> {{ nodeData.emotions.join('、') }}
+                                                </div>
+                                                <div v-if="nodeData.people.length">
+                                                    <strong>人物：</strong> {{ nodeData.people.join('、') }}
+                                                </div>
+                                                <div v-if="nodeData.times.length">
+                                                    <strong>时间：</strong> {{ nodeData.times.join('、') }}
+                                                </div>
+                                                <div v-if="nodeData.locations.length">
+                                                    <strong>地点：</strong> {{ nodeData.locations.join('、') }}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 预测控制按钮 -->
+                                            <div class="prediction-controls" style="margin: 15px 0;">
+                                                <button 
+                                                    class="btn btn-primary" 
+                                                    @click="triggerPrediction" 
+                                                    :disabled="!hasAnyTagSelected">
+                                                    开始预测
+                                                </button>
+                                                <span v-if="!hasAnyTagSelected" class="empty-content-note">
+                                                    请至少选择一个情绪标签
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- 预测加载状态 -->
+                                            <div v-if="isPredicting" class="prediction-loader-container">
+                                                <div class="prediction-loader"></div>
+                                                <div class="prediction-status-message">
+                                                    正在为"<strong>{{ getStepTitle(currentStep) }}</strong>"生成预测结果...
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 预测结果区域 -->
+                                            <div class="prediction-title" v-if="predictions[0]?.length > 0">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span>{{ getPredictionTitle(currentStep) }}</span>
+                                                    <div class="prediction-controls">
+                                                        <span class="prediction-mode">
+                                                            <button 
+                                                                class="mode-btn" 
+                                                                :class="{ active: predictionMode === 'ai' }"
+                                                                @click="predictionMode = 'ai'">
+                                                                AI
+                                                            </button>
+                                                            <button 
+                                                                class="mode-btn" 
+                                                                :class="{ active: predictionMode === 'preset' }"
+                                                                @click="predictionMode = 'preset'">
+                                                                预设
+                                                            </button>
+                                                        </span>
+                                                        <button class="refresh-btn" @click="triggerPrediction">重新预测</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div v-if="!isPredicting && predictions[0]?.length > 0">
+                                                <div 
+                                                    v-for="(event, index) in predictions[0]" 
+                                                    :key="index"
+                                                    class="prediction-item"
+                                                    :class="{ selected: nodeData.levels[0] === event }"
+                                                    @click="selectPrediction(0, event)">
+                                                    {{ event }}
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="step-actions">
+                                                <button class="btn btn-success" @click="saveNodeAtCurrentStep">保存节点</button>
+                                                <button 
+                                                    class="btn btn-primary" 
+                                                    @click="goToNextStep"
+                                                    :disabled="!nodeData.levels[0]">
+                                                    继续深入分析 →
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 更深层次的步骤 (步骤 >= 2) -->
+                                        <div class="step-body" v-if="currentStep >= 2">
+                                            <!-- 当前的选择路径 -->
+                                            <div class="prediction-path">
+                                                <div class="path-item">
+                                                    <span class="path-level">情绪:</span> {{ nodeData.emotions.join('、') }}
+                                                    <span v-if="nodeData.people.length">, <span class="path-level">人物:</span> {{ nodeData.people.join('、') }}</span>
+                                                    <span v-if="nodeData.times.length">, <span class="path-level">时间:</span> {{ nodeData.times.join('、') }}</span>
+                                                    <span v-if="nodeData.locations.length">, <span class="path-level">地点:</span> {{ nodeData.locations.join('、') }}</span>
+                                                </div>
+                                                <div class="path-steps">
+                                                    <div v-for="(level, index) in nodeData.levels.slice(0, currentStep-1)" 
+                                                        :key="index" 
+                                                        class="path-step" 
+                                                        v-if="level && level.trim() !== ''">
+                                                        <span class="path-level">{{ getStepTitle(index+1) }}:</span> {{ level }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 预测控制按钮 -->
+                                            <div class="prediction-controls" style="margin: 15px 0;">
+                                                <button 
+                                                    class="btn btn-primary" 
+                                                    @click="triggerPrediction" 
+                                                    :disabled="!hasAnyTagSelected">
+                                                    开始预测
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- 预测加载状态 -->
+                                            <div v-if="isPredicting" class="prediction-loader-container">
+                                                <div class="prediction-loader"></div>
+                                                <div class="prediction-status-message">
+                                                    正在为"<strong>{{ getStepTitle(currentStep) }}</strong>"生成预测结果...
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 新层级预测 -->
+                                            <div class="prediction-list">
+                                                <div class="prediction-title" v-if="predictions[currentStep-1]?.length > 0">
+                                                    <span>{{ getPredictionTitle(currentStep) }}</span>
+                                                    <div class="prediction-controls">
+                                                        <span class="prediction-mode">
+                                                            <button 
+                                                                class="mode-btn" 
+                                                                :class="{ active: predictionMode === 'ai' }"
+                                                                @click="predictionMode = 'ai'">
+                                                                AI
+                                                            </button>
+                                                            <button 
+                                                                class="mode-btn" 
+                                                                :class="{ active: predictionMode === 'preset' }"
+                                                                @click="predictionMode = 'preset'">
+                                                                预设
+                                                            </button>
+                                                        </span>
+                                                        <button class="refresh-btn" @click="triggerPrediction">重新预测</button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div v-if="!isPredicting && predictions[currentStep-1]?.length > 0">
+                                                    <div 
+                                                        v-for="(pred, index) in predictions[currentStep-1]" 
+                                                        :key="index"
+                                                        class="prediction-item"
+                                                        :class="{ selected: nodeData.levels[currentStep-1] === pred }"
+                                                        @click="selectPrediction(currentStep-1, pred)">
+                                                        {{ pred }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="step-actions">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-warning" @click="goToPreviousStep">← 返回</button>
+                                                    <button class="btn btn-success" @click="saveNodeAtCurrentStep">保存节点</button>
+                                                </div>
+                                                <button 
+                                                    class="btn btn-primary" 
+                                                    @click="goToNextStep"
+                                                    :disabled="!nodeData.levels[currentStep-1]">
+                                                    继续深入分析 →
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 已记录节点列表 -->
+                                    <div class="node-list">
+                                        <div v-for="node in currentSession.nodes" :key="node.id" class="node-item">
+                                            <!-- 节点层级路径显示 -->
+                                            <div class="prediction-path">
+                                                <div class="path-item">
+                                                    <span class="path-level">情绪:</span> {{ formatTagList(node.emotions) }}
+                                                    <span v-if="node.people && node.people.length">, <span class="path-level">人物:</span> {{ formatTagList(node.people) }}</span>
+                                                    <span v-if="node.times && node.times.length">, <span class="path-level">时间:</span> {{ formatTagList(node.times) }}</span>
+                                                    <span v-if="node.locations && node.locations.length">, <span class="path-level">地点:</span> {{ formatTagList(node.locations) }}</span>
+                                                </div>
+                                                <div class="path-steps">
+                                                    <div v-for="(level, index) in node.levels" 
+                                                        :key="index" 
+                                                        class="path-step">
+                                                        <span class="path-level">{{ getStepTitle(index+1) }}:</span> {{ level }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 描述内容 -->
+                                            <div v-if="node.description" class="node-content-display">
+                                                描述: {{ node.description }}
+                                            </div>
+
+                                            <!-- 咨询师评论 -->
+                                            <div class="node-comment" v-if="node.comment">
+                                                <div class="comment-header">咨询师评论:</div>
+                                                <div class="comment-content">{{ node.comment }}</div>
+                                            </div>
+                                            
+                                            <!-- 节点操作按钮 -->
+                                            <div class="node-actions">
+                                                <button class="btn-icon" @click="addComment(node)">
+                                                    {{ node.comment ? '修改评论' : '添加评论' }}
+                                                </button>
+                                                <button class="btn-icon delete" @click="deleteNode(node)">
+                                                    删除
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- 节点时间戳 -->
+                                            <div class="node-timestamp">{{ formatDate(node.timestamp) }}</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 评论弹窗 -->
+                                    <div class="modal" v-if="showCommentModal">
+                                        <div class="modal-content">
+                                            <h3>{{ editingNode.comment ? '修改评论' : '添加评论' }}</h3>
+                                            <textarea 
+                                                v-model="commentText" 
+                                                placeholder="请输入您的评论..."
+                                                rows="4"
+                                                class="comment-textarea">
+                                            </textarea>
+                                            <div class="modal-actions">
+                                                <button class="btn btn-primary" @click="saveComment">保存</button>
+                                                <button class="btn" @click="showCommentModal = false">取消</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 右侧面板：事件流与预览 -->
+                                <div class="preview-panel">
+                                    <div class="event-flow">
+                                        <h3>事件流时间线</h3>
+                                        <p v-if="!currentSession.nodes || currentSession.nodes.length === 0">尚未记录任何节点</p>
+                                        <ul v-else>
+                                            <li v-for="node in currentSession.nodes" :key="node.id" style="margin-bottom: 15px;">
+                                                <div class="badge-list">
+                                                    <span class="dimension-label">情绪: {{ formatTagList(node.emotions) }}</span>
+                                                    <span v-if="node.people && node.people.length" class="dimension-label">人物: {{ formatTagList(node.people) }}</span>
+                                                </div>
+                                                <div v-for="(level, index) in node.levels" 
+                                                    :key="index">
+                                                    <span style="color: #1976d2;">→ {{ getStepTitle(index+1) }}:</span> {{ level }}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <button 
+                                        class="generate-analysis" 
+                                        @click="generateAnalysis"
+                                        :disabled="!currentSession.nodes || currentSession.nodes.length === 0">
+                                        生成复盘
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 复盘分析视图 -->
+                        <div class="analysis-container" v-else-if="currentView === 'record' && showAnalysis">
+                            <div class="breadcrumb">
+                                <span class="home-link" @click="goToClientManager">来访者管理</span>
+                                <span class="breadcrumb-separator">›</span>
+                                <span class="home-link" @click="goToSessionManager">{{ currentClient.name }}</span>
+                                <span class="breadcrumb-separator">›</span>
+                                <span class="home-link" @click="showAnalysis = false">{{ currentSession.title || '未命名会话' }}</span>
+                                <span class="breadcrumb-separator">›</span>
+                                <span>复盘分析</span>
+                            </div>
+                            
+                            <h2>咨询复盘分析</h2>
+                            <button class="btn btn-primary" @click="showAnalysis = false">返回记录页面</button>
+                            
+                            <!-- 事件流时间线 -->
+                            <div class="event-timeline">
+                                <h3>事件流时间线</h3>
+                                <ul>
+                                    <li v-for="node in currentSession.nodes" :key="node.id" style="margin-bottom: 15px;">
+                                        <div class="badge-list">
+                                            <span class="dimension-label">情绪: {{ formatTagList(node.emotions) }}</span>
+                                            <span v-if="node.people && node.people.length" class="dimension-label">人物: {{ formatTagList(node.people) }}</span>
+                                        </div>
+                                        <div v-for="(level, index) in node.levels" :key="index" v-if="level && level.trim() !== ''">
+                                            <span style="color: #1976d2;">→ {{ getStepTitle(index+1) }}:</span> {{ level }}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- AI复盘文本 -->
+                            <div class="ai-analysis">
+                                <h2>AI复盘</h2>
+                                <div class="analysis-content">{{ currentSession.analysis?.aiAnalysisText || '尚未生成分析内容' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                setup() {
+                    // 视图状态管理
+                    const currentView = ref('clientManager');
+                    const showAddClientForm = ref(false);
+                    const showAnalysis = ref(false);
+                    const isPredicting = ref(false);
+                    const predictionMode = ref('ai');
+                    
+                    // 客户管理
+                    const clients = ref([]);
+                    const editingClient = ref(null);
+                    const newClient = ref({
+                        name: '',
+                        gender: '男',
+                        age: '',
+                        contact: '',
+                        notes: ''
+                    });
+                    const currentClient = ref(null);
+                    
+                    // 会话管理
+                    const sessions = ref([]);
+                    const currentSession = ref(null);
+                    
+                    // 多步骤节点创建
+                    const currentStep = ref(1);
+                    const MAX_STEPS = 5;
+                    const nodeData = reactive({
+                        emotions: [],
+                        people: [],
+                        times: [],
+                        locations: [],
+                        description: '',
+                        levels: Array(MAX_STEPS).fill('')
+                    });
+                    
+                    // 预测结果 - 正确初始化
+                    const predictions = ref([]);
+                    for (let i = 0; i < MAX_STEPS; i++) {
+                        predictions.value.push([]);
+                    }
+                    
+                    // 计算属性
+                    const clientSessions = computed(() => {
+                        if (!currentClient.value) return [];
+                        return sessions.value.filter(session => session.clientId === currentClient.value.id)
+                            .sort((a, b) => new Date(b.date) - new Date(a.date));
+                    });
+                    
+                    const hasAnyTagSelected = computed(() => {
+                        return nodeData.emotions.length > 0 || 
+                            nodeData.people.length > 0 || 
+                            nodeData.times.length > 0 || 
+                            nodeData.locations.length > 0;
+                    });
+                    
+                    // API配置
+                    const API_CONFIG = {
+                        deepseek: {
+                            key: "sk-vriibatgsltyvidowermchykjwlzhwebtczeffuiyjpqtsha",
+                            url: "https://api.siliconflow.cn/v1/chat/completions",
+                            model: "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+                        }
+                    };
+
+                    // 使用DeepSeek-R1模型的API调用函数
+                    async function callDeepSeekAPI(prompt, maxTokens = 800, temperature = 0.7) {
+                        try {
+                            console.log("发送到API的提示:", prompt);
+                            
+                            const response = await fetch(API_CONFIG.deepseek.url, {
+                                method: "POST",
+                                headers: {
+                                    "Authorization": `Bearer ${API_CONFIG.deepseek.key}`,
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    model: API_CONFIG.deepseek.model,
+                                    messages: [
+                                        {
+                                            role: "user",
+                                            content: prompt
+                                        }
+                                    ],
+                                    stream: false,
+                                    max_tokens: maxTokens,
+                                    temperature: temperature,
+                                    top_p: 0.7,
+                                    top_k: 50,
+                                    frequency_penalty: 0.5,
+                                    n: 1,
+                                    response_format: {
+                                        type: "text"
+                                    }
+                                })
+                            });
+                            
+                            if (!response.ok) {
+                                console.error(`API调用失败: ${response.status} ${response.statusText}`);
+                                return null;
+                            }
+                            
+                            const data = await response.json();
+                            console.log("API 响应:", data);
+                            
+                            // 提取响应内容
+                            return data.choices[0].message.content;
+                        } catch (error) {
+                            console.error("调用API出错:", error);
+                            return null;
+                        }
+                    }
+
+                    // 提取选项函数
+                    function extractOptions(text) {
+                        console.log("原始模型响应:", text);
+                        
+                        // 清理格式说明和提示词残留
+                        let cleanedText = text
+                            .replace(/【.*?】/g, '')
+                            .replace(/\n*输出要求.*?\n/gs, '')
+                            .replace(/\n*格式.*?\n/gs, '')
+                            .replace(/\n*风格示例.*?\n/gs, '')
+                            .trim();
+                        
+                        // 匹配编号选项（1. xxx 格式）
+                        const numberedRegex = /\d+[\.、)]\s*([^\d\.\n]{2,60}?)(?=\s*(?:\d+[\.、)]|$))/g;
+                        const matches = [...cleanedText.matchAll(numberedRegex)];
+                        
+                        if (matches.length >= 2) {
+                            const options = matches.map(m => m[1].trim()).filter(Boolean);
+                            console.log("提取的选项:", options);
+                            return options.slice(0, 3);
+                        }
+                        
+                        // 备用方案：按行分割
+                        const lines = cleanedText.split('\n')
+                            .map(line => line.trim())
+                            .filter(line => line.length > 5 && /^\d+/.test(line));
+                            
+                        if (lines.length >= 2) {
+                            const options = lines.map(line => line.replace(/^\d+[\.、)]\s*/, ''));
+                            console.log("按行提取的选项:", options);
+                            return options.slice(0, 3);
+                        }
+                        
+                        return ["需要更多标签信息", "请尝试添加情绪标签", "或重新预测"];
+                    }
+
+                    // 获取预设预测
+                    const presetPredictions = {
+                        // 第1步：事件类型 - 按情绪分类
+                        step1: {
+                            "焦虑": ["学业表现焦虑", "社交评价恐惧", "未来不确定性焦虑"],
+                            "悲伤": ["亲密关系失落", "社交孤立体验", "期望落空挫折"],
+                            "愤怒": ["自我边界被侵犯", "需求被忽视", "权威与控制冲突"],
+                            "恐惧": ["安全感威胁", "重要关系丧失恐惧", "失控感"],
+                            "羞愧": ["能力不足感", "社交失误羞耻", "身份认同危机"],
+                            // 默认选项
+                            "默认": ["人际关系困扰", "自我价值感波动", "情绪调节挑战"]
+                        },
+                        
+                        // 第2步：具体事件
+                        step2: {
+                            "学业表现焦虑": [
+                                "考试前反复检查却仍担心遗漏", 
+                                "发言时紧张导致表现不佳", 
+                                "成绩下滑引发强烈焦虑"
+                            ],
+                            "默认": [
+                                "日常生活中的反复挫折", 
+                                "重要关系中的沟通障碍", 
+                                "自我期望与现实之间的冲突"
+                            ]
+                        },
+                        
+                        // 第3步：深层信念
+                        step3: {
+                            "默认": [
+                                "我必须表现完美才能被爱", 
+                                "我不够好，不值得被爱", 
+                                "我必须照顾他人高于自己"
+                            ]
+                        },
+                        
+                        // 第4步：核心需求
+                        step4: {
+                            "默认": [
+                                "安全感与归属的需求", 
+                                "被看见与被理解的需求", 
+                                "自主性与控制感的需求"
+                            ]
+                        },
+                        
+                        // 第5步：创伤原点
+                        step5: {
+                            "默认": [
+                                "早期情感需求未被满足的经历", 
+                                "重要依恋关系中的不一致回应", 
+                                "童年期的过早责任承担"
+                            ]
+                        }
+                    };
+
+                    // 备选预设集合
+                    const alternativePresets = {
+                        step1: {
+                            "焦虑": ["能力验证恐惧", "关系不确定感", "身份认同困惑"],
+                            "悲伤": ["失去重要体验", "价值感缺失", "自我否定循环"],
+                            "愤怒": ["尊严受到威胁", "界限被侵犯", "控制感丧失"],
+                            "恐惧": ["安全感受损", "亲密关系威胁", "自主性消失"],
+                            "羞愧": ["表现未达期望", "自我批判循环", "暴露缺陷恐惧"],
+                            "默认": ["适应困难", "归属需求受阻", "情绪调控障碍"]
+                        },
+                        step2: {
+                            "默认": [
+                                "独自面对困难时感到无助",
+                                "重要关系中遭遇误解",
+                                "期待得不到回应"
+                            ]
+                        },
+                        step3: {
+                            "默认": [
+                                "我需要完美才能被接纳",
+                                "我的感受总是被忽视",
+                                "我不配得到好的结果"
+                            ]
+                        },
+                        step4: {
+                            "默认": [
+                                "被真实看见的需求",
+                                "独立自主的需求",
+                                "情感连接的需求"
+                            ]
+                        },
+                        step5: {
+                            "默认": [
+                                "童年情感需求被忽视",
+                                "成长中缺乏安全感",
+                                "早期关系中的背叛"
+                            ]
+                        }
+                    };
+                    
+                    // 修改 getPresetPredictions 函数
+                    function getPresetPredictions(step, context, isRefresh = false) {
+                        // 使用备选预设集合
+                        const presetSets = isRefresh ? alternativePresets : presetPredictions;
+                        
+                        if (step === 1) {
+                            if (context.emotions.length > 0) {
+                                const primaryEmotion = context.emotions[0];
+                                if (presetSets.step1[primaryEmotion]) {
+                                    return presetSets.step1[primaryEmotion];
+                                }
+                            }
+                            return presetSets.step1.默认;
+                        } 
+                        else if (step === 2) {
+                            const eventType = context.previousLevels[0];
+                            return presetSets.step2[eventType] || presetSets.step2.默认;
+                        }
+                        else if (step === 3) {
+                            return presetSets.step3.默认;
+                        }
+                        else if (step === 4) {
+                            return presetSets.step4.默认;
+                        }
+                        else if (step === 5) {
+                            return presetSets.step5.默认;
+                        }
+                        return ["需要更多信息", "请添加标签", "或重新预测"];
+                    }
+
+                    // 生成预测函数
+                    async function generatePredictions(step) {
+                        console.log(`开始生成第${step}步的预测, 模式: ${predictionMode.value}`);
+                        isPredicting.value = true;
+                        
+                        try {
+                            const context = {
+                                emotions: [...nodeData.emotions],
+                                people: [...nodeData.people], 
+                                times: [...nodeData.times],
+                                locations: [...nodeData.locations],
+                                description: nodeData.description,
+                                previousLevels: nodeData.levels.slice(0, step-1).filter(Boolean)
+                            };
+                            
+                            let tempPredictions = [];
+                            
+                            if (predictionMode.value === 'preset') {
+                                tempPredictions = getPresetPredictions(step, context);
+                            } else {
+                                let prompt = "";
+                                
+                                if (step === 1) {
+                                    prompt = `你是一位心理咨询AI助手，正在协助咨询师识别来访者可能正在经历的心理事件类型。
+
+请根据以下结构化信息，生成3个可能的事件类型名称，用于帮助咨询师记录和分析。
+
+【来访者信息】
+情绪：${context.emotions.join('、')}
+人物：${context.people.join('、')}
+时间：${context.times.join('、')}
+地点：${context.locations.join('、')}
+
+【生成要求】
+1. 输出3个简短的事件类型标签（5-9字）
+2. 所有标签必须基于输入的人物、时间和地点，不得引入输入中未出现的人物或场景
+3. 禁止出现"AI"、"系统"、"家庭冲突"等无关内容
+4. 风格示例（仅供参考）：
+
+1. 童年被老师责骂  
+2. 小学课堂遭受否定  
+3. 面对老师产生焦虑感`;
+                                } 
+                                else if (step === 2) {
+                                    prompt = `你是一位心理咨询AI助手，请根据以下信息，推测可能发生的具体心理事件场景。
+
+【基础信息】
+事件类型：${context.previousLevels[0]}
+情绪：${context.emotions.join('、')}
+人物：${context.people.join('、')}
+时间：${context.times.join('、')}
+地点：${context.locations.join('、')}
+
+【输出要求】
+1. 每条描述应是具体的生活场景，基于"我"的视角
+2. 每条长度在15字以内
+3. 避免抽象术语（如：情绪困扰、心理阴影等）
+
+仅输出如下格式：
+1. 上课答错被老师批评  
+2. 老师否定我交的作业  
+3. 教室里因紧张而出错`;
+                                }
+                                else if (step === 3) {
+                                    prompt = `请基于来访者的事件经历，推测其可能形成的深层信念。
+
+【事件背景】
+事件类型：${context.previousLevels[0]}
+具体事件：${context.previousLevels[1]}
+
+【输出要求】
+1. 每条以"我..."开头
+2. 表达长期形成的信念、看法或模式
+3. 不使用绝对词汇如"永远"、"从不"，避免病理标签
+4. 每条在15字以内
+
+格式：
+1. 我总是做不好任何事  
+2. 我让老师失望了  
+3. 我说话没人会在意`;
+                                }
+                                else if (step === 4) {
+                                    prompt = `请基于来访者的深层信念，推测其对应的心理核心需求。
+
+【信念背景】
+深层信念：${context.previousLevels[2]}
+
+【输出要求】
+1. 每条以"...的需求"结尾
+2. 表达被理解、被看见、被接纳等核心心理渴望
+3. 避免使用模糊词（如：情绪支持、心理稳定）
+
+仅输出如下格式：
+1. 被老师公平对待的需求  
+2. 被认可和鼓励的需求  
+3. 成功时被肯定的需求`;
+                                }
+                                else if (step === 5) {
+                                    prompt = `你是一位心理咨询AI助手，请根据来访者的以下心理内容，推测其可能的早期经历。
+
+【背景信息】
+事件类型：${context.previousLevels[0]}
+深层信念：${context.previousLevels[2]}
+核心需求：${context.previousLevels[3]}
+
+【输出要求】
+1. 每条是具体的生活经历（童年、学生时期等）
+2. 每条15字以内，具有画面感
+3. 避免抽象叙述和心理学术语
+
+仅输出如下格式：
+1. 小学时因成绩差被责骂  
+2. 老师常在课堂中否定我  
+3. 想回答问题却害怕发言`;
+                                }
+                                
+                                try {
+                                    const aiResponse = await callDeepSeekAPI(prompt, 800, 0.7);
+                                    tempPredictions = extractOptions(aiResponse);
+                                } catch (error) {
+                                    console.error("AI预测失败，使用预设:", error);
+                                    tempPredictions = getPresetPredictions(step, context);
+                                }
+                            }
+                            
+                            // 更新预测结果
+                            const newArray = [...predictions.value];
+                            newArray[step-1] = tempPredictions.slice(0, 3);
+                            predictions.value = newArray;
+                        } catch (error) {
+                            console.error("生成预测失败:", error);
+                        } finally {
+                            // 确保至少显示1秒的进度条
+                            setTimeout(() => {
+                                isPredicting.value = false;
+                            }, 1000);
+                        }
+                    }
+
+                    // 前进到下一步
+                    async function goToNextStep() {
+                        if (currentStep.value < MAX_STEPS) {
+                            // 检查当前步骤是否已选择
+                            if (!nodeData.levels[currentStep.value - 1]) {
+                                alert("请先选择一个选项再继续");
+                                return;
+                            }
+                            
+                            // 进入下一步
+                            currentStep.value++;
+                            
+                            // 基于前一步的选择自动触发预测
+                            await triggerPrediction();
+                            
+                            console.log(`进入步骤${currentStep.value}，已选择路径:`, nodeData.levels);
+                        }
+                    }
+                    
+                    // 触发预测函数
+                    async function triggerPrediction(isRefresh = false) {
+                        if (!hasAnyTagSelected.value) {
+                            alert("请至少选择一个情绪标签");
+                            return;
+                        }
+                        
+                        const step = currentStep.value;
+                        isPredicting.value = true;
+                        
+                        try {
+                            console.log("预测触发:", isRefresh ? "重新预测" : "首次预测");
+                            
+                            // 保存之前的预测结果，用于排除
+                            const previousPredictions = [...(predictions.value[step-1] || [])];
+                            
+                            // 传递重新预测标志
+                            await generatePredictions(step, isRefresh, previousPredictions);
+                        } catch (error) {
+                            console.error("预测触发失败:", error);
+                            alert("预测失败，请重试");
+                        } finally {
+                            setTimeout(() => {
+                                isPredicting.value = false;
+                            }, 1000);
+                        }
+                    }
+                    
+                    // 选择预测项
+                    function selectPrediction(step, prediction) {
+                        console.log(`选择第${step}步预测:`, prediction);
+                        
+                        // 更新当前步骤的选择
+                        nodeData.levels[step] = prediction;
+                        
+                        // 只有在第一步时，才清空后续选择
+                        if (step === 0) {
+                            // 清空后续步骤的选择，因为第一步变化会影响后续分析
+                            for (let i = 1; i < MAX_STEPS; i++) {
+                                nodeData.levels[i] = '';
+                            }
+                            
+                            // 重置到第一步
+                            currentStep.value = 1;
+                        }
+                        
+                        // 记录日志
+                        console.log("更新后的预测路径:", nodeData.levels);
+                    }
+                    
+                    // 切换标签
+                    function toggleTag(type, value) {
+                        const array = nodeData[type];
+                        const index = array.indexOf(value);
+                        if (index === -1) {
+                            array.push(value);
+                        } else {
+                            array.splice(index, 1);
+                        }
+                    }
+                    
+                    // 返回上一步
+                    function goToPreviousStep() {
+                        if (currentStep.value > 1) {
+                            currentStep.value--;
+                        }
+                    }
+                    
+                    // 重置节点创建
+                    function resetNodeCreation() {
+                        currentStep.value = 1;
+                        nodeData.emotions.length = 0;
+                        nodeData.people.length = 0;
+                        nodeData.times.length = 0;
+                        nodeData.locations.length = 0;
+                        nodeData.description = '';
+                        
+                        for (let i = 0; i < MAX_STEPS; i++) {
+                            nodeData.levels[i] = '';
+                        }
+                        
+                        // 清空预测
+                        predictions.value = Array(MAX_STEPS).fill([]);
+                    }
+                    
+                    // 保存当前节点
+                    function saveNodeAtCurrentStep() {
+                        if (nodeData.emotions.length === 0) {
+                            alert("请至少选择一个情绪标签");
+                            return;
+                        }
+                        
+                        // 确保至少有一级预测被选择
+                        if (!nodeData.levels[0]) {
+                            alert("请至少选择一个事件类型");
+                            return;
+                        }
+                        
+                        // 创建深拷贝，确保数据不受后续操作影响
+                        const savedLevels = JSON.parse(JSON.stringify(nodeData.levels));
+                        
+                        // 过滤掉空值
+                        const filteredLevels = savedLevels.map(level => level || '');
+                        
+                        console.log("保存的预测数据:", filteredLevels);
+                        
+                        const newNode = {
+                            id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+                            emotions: [...nodeData.emotions],
+                            people: [...nodeData.people],
+                            times: [...nodeData.times],
+                            locations: [...nodeData.locations],
+                            description: nodeData.description,
+                            levels: filteredLevels,  // 使用处理后的数据
+                            step: currentStep.value,
+                            timestamp: new Date().toISOString()
+                        };
+                        
+                        if (!currentSession.value.nodes) {
+                            currentSession.value.nodes = [];
+                        }
+                        
+                        currentSession.value.nodes.push(newNode);
+                        saveDataToLocalStorage();
+                        resetNodeCreation();
+                        alert("节点已保存");
+                    }
+                    
+                    // 生成分析
+                    async function generateAnalysis() {
+                        if (!currentSession.value.nodes || currentSession.value.nodes.length === 0) {
+                            alert("请先添加节点");
+                            return;
+                        }
+                        
+                        showAnalysis.value = true;
+                        
+                        if (!currentSession.value.analysis) {
+                            currentSession.value.analysis = {
+                                aiAnalysisText: "正在生成分析内容..."
+                            };
+                            
+                            try {
+                                // 构建分析提示
+                                let analysisPrompt = `你是一位专业的心理咨询师，请对以下咨询记录进行深入分析：\n\n`;
+                                
+                                currentSession.value.nodes.forEach((node, index) => {
+                                    analysisPrompt += `节点 ${index + 1}：\n`;
+                                    analysisPrompt += `情绪: ${node.emotions.join(', ')}\n`;
+                                    if (node.people.length) analysisPrompt += `人物: ${node.people.join(', ')}\n`;
+                                    if (node.times.length) analysisPrompt += `时间: ${node.times.join(', ')}\n`;
+                                    if (node.locations.length) analysisPrompt += `地点: ${node.locations.join(', ')}\n`;
+                                    
+                                    node.levels.forEach((level, idx) => {
+                                        if (level) {
+                                            const stepTitle = getStepTitle(idx + 1);
+                                            analysisPrompt += `${stepTitle}: ${level}\n`;
+                                        }
+                                    });
+                                    
+                                    if (node.description) {
+                                        analysisPrompt += `描述: ${node.description}\n`;
+                                    }
+                                    
+                                    analysisPrompt += '\n';
+                                });
+                                
+                                analysisPrompt += `请提供以下内容：
+1. 主要心理模式分析
+2. 关键情绪和认知特点
+3. 可能的干预方向
+4. 治疗建议
+
+请以专业而通俗的语言回答，适合咨询师参考。`;
+                                
+                                const analysisResult = await callDeepSeekAPI(analysisPrompt, 1500, 0.7);
+                                currentSession.value.analysis.aiAnalysisText = analysisResult;
+                                saveDataToLocalStorage();
+                            } catch (error) {
+                                console.error("生成分析失败:", error);
+                                currentSession.value.analysis.aiAnalysisText = "生成分析失败，请重试。";
+                            }
+                        }
+                    }
+                    
+                    // 辅助函数
+                    function getStepTitle(step) {
+                        if (step === 1) return "事件类型";
+                        if (step === 2) return "具体事件";
+                        if (step === 3) return "深层信念";
+                        if (step === 4) return "核心需求";
+                        if (step === 5) return "创伤原点";
+                        return `深度分析 ${step-5}`;
+                    }
+                    
+                    function getPredictionTitle(step) {
+                        if (step === 2) return "预测的具体事件：";
+                        if (step === 3) return "预测的深层信念：";
+                        if (step === 4) return "预测的核心需求：";
+                        if (step === 5) return "预测的创伤原点：";
+                        return "预测：";
+                    }
+                    
+                    function formatTagList(tags) {
+                        if (!tags || !Array.isArray(tags)) return '';
+                        return tags.join('、');
+                    }
+                    
+                    function formatDate(dateString) {
+                        if (!dateString) return '';
+                        return new Date(dateString).toLocaleString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                    
+                    // 客户管理方法
+                    function selectClient(client) {
+                        currentClient.value = client;
+                        currentView.value = 'sessionManager';
+                    }
+                    
+                    function editClient(client) {
+                        editingClient.value = client;
+                        newClient.value = {
+                            name: client.name,
+                            gender: client.gender,
+                            age: client.age,
+                            contact: client.contact || '',
+                            notes: client.notes || ''
+                        };
+                        showAddClientForm.value = true;
+                    }
+                    
+                    function deleteClient(client) {
+                        if (confirm(`确定要删除来访者 "${client.name}" 吗？这将同时删除所有相关的咨询记录。`)) {
+                            clients.value = clients.value.filter(c => c.id !== client.id);
+                            sessions.value = sessions.value.filter(s => s.clientId !== client.id);
+                            saveDataToLocalStorage();
+                        }
+                    }
+                    
+                    function saveClient() {
+                        if (!newClient.value.name || !newClient.value.age) {
+                            alert("姓名和年龄为必填项");
+                            return;
+                        }
+                        
+                        if (editingClient.value) {
+                            // 编辑现有客户
+                            const index = clients.value.findIndex(c => c.id === editingClient.value.id);
+                            if (index !== -1) {
+                                clients.value[index] = {
+                                    ...editingClient.value,
+                                    name: newClient.value.name,
+                                    gender: newClient.value.gender,
+                                    age: parseInt(newClient.value.age),
+                                    contact: newClient.value.contact,
+                                    notes: newClient.value.notes
+                                };
+                            }
+                        } else {
+                            // 添加新客户
+                            const client = {
+                                id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+                                name: newClient.value.name,
+                                gender: newClient.value.gender,
+                                age: parseInt(newClient.value.age),
+                                contact: newClient.value.contact,
+                                notes: newClient.value.notes,
+                                createdAt: new Date().toISOString()
+                            };
+                            clients.value.push(client);
+                        }
+                        
+                        saveDataToLocalStorage();
+                        showAddClientForm.value = false;
+                        editingClient.value = null;
+                        newClient.value = {
+                            name: '',
+                            gender: '男',
+                            age: '',
+                            contact: '',
+                            notes: ''
+                        };
+                    }
+                    
+                    function cancelAddClient() {
+                        showAddClientForm.value = false;
+                        editingClient.value = null;
+                        newClient.value = {
+                            name: '',
+                            gender: '男',
+                            age: '',
+                            contact: '',
+                            notes: ''
+                        };
+                    }
+                    
+                    // 会话管理方法
+                    function createNewSession() {
+                        const newSession = {
+                            id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+                            clientId: currentClient.value.id,
+                            title: `${currentClient.value.name}的咨询 - ${new Date().toLocaleDateString()}`,
+                            date: new Date().toISOString(),
+                            nodes: []
+                        };
+                        
+                        sessions.value.push(newSession);
+                        saveDataToLocalStorage();
+                        openSession(newSession);
+                    }
+                    
+                    function openSession(session) {
+                        currentSession.value = session;
+                        currentView.value = 'record';
+                        showAnalysis.value = false;
+                        resetNodeCreation();
+                    }
+                    
+                    function goToClientManager() {
+                        currentView.value = 'clientManager';
+                        currentClient.value = null;
+                        currentSession.value = null;
+                    }
+                    
+                    function goToSessionManager() {
+                        if (currentClient.value) {
+                            currentView.value = 'sessionManager';
+                            currentSession.value = null;
+                        } else {
+                            goToClientManager();
+                        }
+                    }
+                    
+                    // 本地存储
+                    function saveDataToLocalStorage() {
+                        localStorage.setItem('counselingClients', JSON.stringify(clients.value));
+                        localStorage.setItem('counselingSessions', JSON.stringify(sessions.value));
+                    }
+                    
+                    function loadDataFromLocalStorage() {
+                        const savedClients = localStorage.getItem('counselingClients');
+                        const savedSessions = localStorage.getItem('counselingSessions');
+                        
+                        if (savedClients) {
+                            clients.value = JSON.parse(savedClients);
+                        }
+                        
+                        if (savedSessions) {
+                            sessions.value = JSON.parse(savedSessions);
+                        }
+                    }
+                    
+                    // 初始化
+                    onMounted(() => {
+                        loadDataFromLocalStorage();
+                        setTimeout(() => {
+                            document.getElementById('app-loading').style.display = 'none';
+                        }, 500);
+                    });
+                    
+                    // 在 setup 函数中添加以下状态和方法
+                    const showCommentModal = ref(false);
+                    const commentText = ref('');
+                    const editingNode = ref(null);
+
+                    // 添加或修改评论
+                    function addComment(node) {
+                        editingNode.value = node;
+                        commentText.value = node.comment || '';
+                        showCommentModal.value = true;
+                    }
+
+                    // 保存评论
+                    function saveComment() {
+                        if (editingNode.value) {
+                            editingNode.value.comment = commentText.value;
+                            saveDataToLocalStorage();
+                        }
+                        showCommentModal.value = false;
+                        editingNode.value = null;
+                        commentText.value = '';
+                    }
+
+                    // 删除节点
+                    function deleteNode(node) {
+                        if (confirm('确定要删除这个节点吗？')) {
+                            const index = currentSession.value.nodes.findIndex(n => n.id === node.id);
+                            if (index !== -1) {
+                                currentSession.value.nodes.splice(index, 1);
+                                saveDataToLocalStorage();
+                            }
+                        }
+                    }
+                    
+                    // 返回所有需要在模板中使用的状态和方法
+                    return {
+                        // 视图状态
+                        currentView,
+                        showAddClientForm,
+                        showAnalysis,
+                        isPredicting,
+                        predictionMode,
+                        
+                        // 标签数据
+                        emotionTags: EMOTION_TAGS,
+                        personTags: PERSON_TAGS,
+                        timeTags: TIME_TAGS,
+                        locationTags: LOCATION_TAGS,
+                        
+                        // 数据状态
+                        clients,
+                        currentClient,
+                        currentSession,
+                        sessions,
+                        clientSessions,
+                        
+                        // 表单状态
+                        newClient,
+                        editingClient,
+                        
+                        // 节点创建
+                        currentStep,
+                        nodeData,
+                        predictions,
+                        hasAnyTagSelected,
+                        
+                        // 方法
+                        getStepTitle,
+                        getPredictionTitle,
+                        toggleTag,
+                        formatTagList,
+                        generatePredictions,
+                        selectPrediction,
+                        goToNextStep,
+                        goToPreviousStep,
+                        saveNodeAtCurrentStep,
+                        resetNodeCreation,
+                        triggerPrediction,
+                        formatDate,
+                        
+                        // 客户管理方法
+                        selectClient,
+                        editClient,
+                        deleteClient,
+                        saveClient,
+                        cancelAddClient,
+                        
+                        // 会话管理方法
+                        createNewSession,
+                        openSession,
+                        goToClientManager,
+                        goToSessionManager,
+                        
+                        // 分析方法
+                        generateAnalysis,
+                        showCommentModal,
+                        commentText,
+                        editingNode,
+                        addComment,
+                        saveComment,
+                        deleteNode,
+                    };
+                }
+            });
+            
+            // 添加全局错误处理
+            app.config.errorHandler = (err, vm, info) => {
+                console.error('Vue错误:', err);
+                console.log('组件:', vm);
+                console.log('信息:', info);
+                alert('应用发生错误，请查看控制台');
+            };
+            
+            // 挂载应用
+            const vm = app.mount('#app');
+        }
+    </script>
+</body>
+</html>
