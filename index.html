@@ -894,6 +894,400 @@
             justify-content: flex-end;
             gap: 10px;
         }
+        
+        .btn-custom {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: #6c757d;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 5px;
+        }
+        
+        .btn-custom:hover {
+            background-color: #5a6268;
+        }
+
+        /* 情绪标签选择器样式 */
+        .emotion-selector {
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        .selected-emotions {
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            min-height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .no-emotions-selected {
+            color: var(--gray-500);
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .emotion-tags-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .selected-emotion {
+            background-color: white;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-select-emotions {
+            width: 100%;
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+            padding: 8px;
+            border: 1px dashed var(--gray-400);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .btn-select-emotions:hover {
+            background-color: var(--gray-300);
+        }
+
+        .plus-icon {
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        /* 情绪选择弹窗样式 */
+        .emotion-selector-modal .modal-content {
+            max-width: 700px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray-600);
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: var(--gray-800);
+        }
+
+        .emotion-categories {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .emotion-category-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 15px 0;
+            overflow-x: auto;
+        }
+
+        .category-tab {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 8px 15px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-tab.active {
+            font-weight: 500;
+        }
+
+        .category-icon {
+            font-size: 18px;
+        }
+
+        .detailed-emotions {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .emotion-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .emotion-item:hover {
+            background-color: var(--gray-200);
+        }
+
+        .emotion-item.selected {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .emotion-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .emotion-name {
+            font-size: 14px;
+        }
+
+        .selected-emotions-summary {
+            background-color: var(--gray-100);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+        }
+
+        .selected-emotions-summary h4 {
+            margin-bottom: 10px;
+            color: var(--gray-700);
+            font-size: 15px;
+        }
+
+        .selected-emotions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .selected-emotion-tag {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .remove-emotion {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            opacity: 0.7;
+        }
+
+        .remove-emotion:hover {
+            opacity: 1;
+        }
+        
+        /* 标签管理器样式 */
+        .tag-manager-content {
+            max-width: 700px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tag-manager-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 15px 0;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .tag-tab {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 8px 15px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tag-tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .tag-manager-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .tag-add-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag-input {
+            padding: 6px 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+        .system-tags-section,
+        .custom-tags-section {
+            margin-bottom: 20px;
+        }
+
+        .system-tags-section h5,
+        .custom-tags-section h5 {
+            font-size: 15px;
+            color: var(--gray-700);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .tag-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: var(--border-radius);
+            background-color: var(--gray-100);
+            transition: var(--transition);
+        }
+
+        .system-tag {
+            border-left: 3px solid var(--info-color);
+        }
+
+        .custom-tag {
+            border-left: 3px solid var(--warning-color);
+            justify-content: space-between;
+        }
+
+        .tag-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .tag-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .tag-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .tag-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .tag-btn:hover {
+            opacity: 1;
+        }
+
+        .tag-edit-input {
+            flex: 1;
+            padding: 4px 6px;
+            border: 1px solid var(--primary-color);
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .no-custom-tags {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray-500);
+            background-color: var(--gray-100);
+            border-radius: var(--border-radius);
+        }
+
+        /* 标签管理按钮 */
+        .tag-manage-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 8px;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .tag-manage-btn:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        /* 标签与emoji显示 */
+        .tag-with-emoji {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .tag-emoji {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -905,33 +1299,179 @@
 
     <!-- 主应用容器 -->
     <div id="app"></div>
-
     <script>
         // 确保Vue可用
         if (typeof Vue === 'undefined') {
             document.body.innerHTML = '<div style="text-align:center;padding:40px;"><h2>加载失败</h2><p>Vue库未能加载，请检查网络连接后刷新页面。</p><button onclick="location.reload()">刷新页面</button></div>';
         } else {
-            const { createApp, ref, computed, onMounted, watch, reactive } = Vue;
+            const { createApp, ref, computed, onMounted, watch, reactive, nextTick } = Vue;
             
-            // 标签数据 - 作为常量
-            const EMOTION_TAGS = [
-                "愤怒", "悲伤", "焦虑", "恐惧", "喜悦", 
-                "羞愧", "内疚", "困惑", "嫉妒", "惊讶"
-            ];
+            // 标签数据 - 修改为分类对象
+            const EMOTION_CATEGORIES = {
+                // 高能量+消极 (红色系列)
+                "愤怒": {
+                    color: "#ff4d4f",
+                    icon: "😠",
+                    emotions: [
+                        { name: "暴怒", icon: "😡" },
+                        { name: "烦躁", icon: "😤" },
+                        { name: "紧绷", icon: "😬" },
+                        { name: "目瞪口呆", icon: "😳" },
+                        { name: "很生气", icon: "😠" },
+                        { name: "狂怒", icon: "🤬" },
+                        { name: "懊恼", icon: "😩" },
+                        { name: "恼火", icon: "😒" },
+                        { name: "不耐烦", icon: "😤" },
+                        { name: "不高兴", icon: "😑" }
+                    ]
+                },
+                "焦虑": {
+                    color: "#ff7a45",
+                    icon: "😰",
+                    emotions: [
+                        { name: "紧张", icon: "😰" },
+                        { name: "坐立不安", icon: "😣" },
+                        { name: "害怕", icon: "😨" },
+                        { name: "焦虑", icon: "😥" },
+                        { name: "忧虑", icon: "😟" },
+                        { name: "担心", icon: "😧" },
+                        { name: "不安", icon: "😖" }
+                    ]
+                },
+                // 高能量+积极 (橙色系列)
+                "喜悦": {
+                    color: "#fa8c16",
+                    icon: "😄",
+                    emotions: [
+                        { name: "惊讶", icon: "😲" },
+                        { name: "乐观", icon: "😊" },
+                        { name: "激动人心", icon: "🤩" },
+                        { name: "狂喜", icon: "😆" },
+                        { name: "兴奋", icon: "😝" },
+                        { name: "欢快", icon: "😁" },
+                        { name: "积极", icon: "😃" },
+                        { name: "兴高采烈", icon: "🥳" },
+                        { name: "精力充沛", icon: "⚡" },
+                        { name: "活跃", icon: "💃" },
+                        { name: "热情", icon: "🔥" },
+                        { name: "激动", icon: "😆" },
+                        { name: "满意", icon: "😌" },
+                        { name: "开心", icon: "😄" },
+                        { name: "自豪", icon: "😏" },
+                        { name: "愉快", icon: "😀" },
+                        { name: "快乐", icon: "😊" },
+                        { name: "希望", icon: "🌈" },
+                        { name: "幸福", icon: "🥰" }
+                    ]
+                },
+                // 低能量+消极 (蓝色系列)
+                "悲伤": {
+                    color: "#1890ff",
+                    icon: "😢",
+                    emotions: [
+                        { name: "厌恶", icon: "🤢" },
+                        { name: "闷闷不乐", icon: "😒" },
+                        { name: "失望", icon: "😞" },
+                        { name: "低落", icon: "😔" },
+                        { name: "冷漠", icon: "😐" },
+                        { name: "消极", icon: "😕" },
+                        { name: "忧郁", icon: "😢" },
+                        { name: "挫败", icon: "😫" },
+                        { name: "悲伤", icon: "😭" },
+                        { name: "无聊", icon: "🥱" },
+                        { name: "疏离", icon: "😶" },
+                        { name: "孤独", icon: "🧍" },
+                        { name: "疲惫", icon: "😪" },
+                        { name: "沮丧", icon: "😓" },
+                        { name: "抑郁", icon: "😞" },
+                        { name: "耗尽", icon: "🏳️" },
+                        { name: "厌倦", icon: "😩" },
+                        { name: "绝望", icon: "😰" },
+                        { name: "凄凉", icon: "💔" },
+                        { name: "精疲力竭", icon: "😵" }
+                    ]
+                },
+                // 低能量+积极 (绿色系列)
+                "平静": {
+                    color: "#52c41a",
+                    icon: "😌",
+                    emotions: [
+                        { name: "安逸", icon: "🛌" },
+                        { name: "悠闲", icon: "🧘" },
+                        { name: "满足", icon: "☺️" },
+                        { name: "爱意", icon: "❤️" },
+                        { name: "自信", icon: "😎" },
+                        { name: "冷静", icon: "😌" },
+                        { name: "安全", icon: "🛡️" },
+                        { name: "满意", icon: "😊" },
+                        { name: "感恩", icon: "🙏" },
+                        { name: "成就感", icon: "🏆" },
+                        { name: "放松", icon: "😌" },
+                        { name: "松弛", icon: "😴" },
+                        { name: "安宁", icon: "🕊️" },
+                        { name: "平衡", icon: "⚖️" },
+                        { name: "自在", icon: "🦋" },
+                        { name: "平静", icon: "😇" },
+                        { name: "舒适", icon: "🛋️" },
+                        { name: "无忧无虑", icon: "🧘‍♀️" },
+                        { name: "惬意", icon: "☕" },
+                        { name: "安详", icon: "🌅" }
+                    ]
+                },
+                // 其他情绪
+                "其他": {
+                    color: "#722ed1",
+                    icon: "🤔",
+                    emotions: [
+                        { name: "羞愧", icon: "😳" },
+                        { name: "内疚", icon: "😔" },
+                        { name: "困惑", icon: "🤔" },
+                        { name: "嫉妒", icon: "😒" },
+                        { name: "惊讶", icon: "😮" },
+                        { name: "憎恶", icon: "😠" }
+                    ]
+                }
+            };
+
+            // 保留扁平化的情绪标签数组，用于兼容原有代码
+            const EMOTION_TAGS = Object.values(EMOTION_CATEGORIES).reduce((acc, category) => {
+                return acc.concat(category.emotions.map(e => e.name));
+            }, []);
             
+            // 初始的标签数据，现在带有emoji图标
             const PERSON_TAGS = [
-                "自己", "妈妈", "爸爸", "老师", "同学",
-                "朋友", "兄弟姐妹", "祖父母", "陌生人"
+                { name: "自己", icon: "👤" },
+                { name: "妈妈", icon: "👩" },
+                { name: "爸爸", icon: "👨" },
+                { name: "老师", icon: "👨‍🏫" },
+                { name: "同学", icon: "👨‍👩‍👧‍👦" },
+                { name: "朋友", icon: "🧑‍🤝‍🧑" },
+                { name: "兄弟姐妹", icon: "👪" },
+                { name: "祖父母", icon: "👴" },
+                { name: "陌生人", icon: "🧍" }
             ];
             
             const TIME_TAGS = [
-                "童年", "幼儿园", "小学", "初中", "高中",
-                "昨天", "今天", "最近", "未来"
+                { name: "童年", icon: "👶" },
+                { name: "幼儿园", icon: "🧸" },
+                { name: "小学", icon: "🏫" },
+                { name: "初中", icon: "📚" },
+                { name: "高中", icon: "🎓" },
+                { name: "昨天", icon: "⏪" },
+                { name: "今天", icon: "📅" },
+                { name: "最近", icon: "⏱️" },
+                { name: "未来", icon: "🔮" }
             ];
             
             const LOCATION_TAGS = [
-                "家里", "学校", "教室", "操场", "公园",
-                "商场", "医院", "网络空间"
+                { name: "家里", icon: "🏠" },
+                { name: "学校", icon: "🏫" },
+                { name: "教室", icon: "📝" },
+                { name: "操场", icon: "🏃" },
+                { name: "公园", icon: "🌳" },
+                { name: "商场", icon: "🛍️" },
+                { name: "医院", icon: "🏥" },
+                { name: "网络空间", icon: "💻" }
             ];
             
             // 创建应用
@@ -1098,38 +1638,49 @@
                                         <!-- 步骤1：基础信息和标签选择 -->
                                         <div class="step-body" v-if="currentStep === 1">
                                             <div class="tag-selector">
-                                                <!-- 情绪标签 -->
-                                                <div class="tag-group">
-                                                    <div class="tag-label">
-                                                        情绪标签
-                                                        <span class="tag-selected-count" v-if="nodeData.emotions.length">{{ nodeData.emotions.length }}</span>
-                                                    </div>
-                                                    <div>
-                                                        <span 
-                                                            v-for="emotion in emotionTags" 
-                                                            :key="emotion"
-                                                            class="tag"
-                                                            :class="{ selected: nodeData.emotions.includes(emotion) }"
-                                                            @click="toggleTag('emotions', emotion)">
-                                                            {{ emotion }}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                <!-- 情绪标签 - 使用弹窗选择 -->
+                                               <!-- 情绪标签 - 使用弹窗选择 -->
+<div class="tag-group emotion-selector">
+    <div class="tag-label">
+        情绪标签
+        <span class="tag-selected-count" v-if="nodeData.emotions.length">{{ nodeData.emotions.length }}</span>
+        <!-- 移除情绪标签的管理按钮 -->
+    </div>
+    <div class="selected-emotions">
+        <div v-if="nodeData.emotions.length === 0" class="no-emotions-selected">
+            尚未选择情绪标签，点击下方按钮选择
+        </div>
+        <div v-else class="emotion-tags-display">
+            <span 
+                v-for="emotion in nodeData.emotions" 
+                :key="emotion"
+                class="selected-emotion">
+                {{ getEmotionIcon(emotion) }} {{ emotion }}
+            </span>
+        </div>
+    </div>
+    <button class="btn btn-select-emotions" @click="openEmotionSelector">
+        选择情绪标签 <span class="plus-icon">+</span>
+    </button>
+</div>
+
                                                 
                                                 <!-- 人物标签 -->
                                                 <div class="tag-group">
                                                     <div class="tag-label">
                                                         人物标签
                                                         <span class="tag-selected-count" v-if="nodeData.people.length">{{ nodeData.people.length }}</span>
+                                                        <button class="tag-manage-btn" @click="openTagManager('people')">管理标签</button>
                                                     </div>
                                                     <div>
                                                         <span 
-                                                            v-for="person in personTags" 
-                                                            :key="person"
-                                                            class="tag"
-                                                            :class="{ selected: nodeData.people.includes(person) }"
-                                                            @click="toggleTag('people', person)">
-                                                            {{ person }}
+                                                            v-for="tag in getAllTags('people')" 
+                                                            :key="getTagKey(tag)"
+                                                            class="tag tag-with-emoji"
+                                                            :class="{ selected: nodeData.people.includes(getTagName(tag)) }"
+                                                            @click="toggleTag('people', getTagName(tag))">
+                                                            <span class="tag-emoji">{{ getTagIcon(tag) }}</span>
+                                                            <span>{{ getTagName(tag) }}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1139,15 +1690,17 @@
                                                     <div class="tag-label">
                                                         时间标签
                                                         <span class="tag-selected-count" v-if="nodeData.times.length">{{ nodeData.times.length }}</span>
+                                                        <button class="tag-manage-btn" @click="openTagManager('times')">管理标签</button>
                                                     </div>
                                                     <div>
                                                         <span 
-                                                            v-for="time in timeTags" 
-                                                            :key="time"
-                                                            class="tag"
-                                                            :class="{ selected: nodeData.times.includes(time) }"
-                                                            @click="toggleTag('times', time)">
-                                                            {{ time }}
+                                                            v-for="tag in getAllTags('times')" 
+                                                            :key="getTagKey(tag)"
+                                                            class="tag tag-with-emoji"
+                                                            :class="{ selected: nodeData.times.includes(getTagName(tag)) }"
+                                                            @click="toggleTag('times', getTagName(tag))">
+                                                            <span class="tag-emoji">{{ getTagIcon(tag) }}</span>
+                                                            <span>{{ getTagName(tag) }}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1157,15 +1710,17 @@
                                                     <div class="tag-label">
                                                         地点标签
                                                         <span class="tag-selected-count" v-if="nodeData.locations.length">{{ nodeData.locations.length }}</span>
+                                                        <button class="tag-manage-btn" @click="openTagManager('locations')">管理标签</button>
                                                     </div>
                                                     <div>
                                                         <span 
-                                                            v-for="location in locationTags" 
-                                                            :key="location"
-                                                            class="tag"
-                                                            :class="{ selected: nodeData.locations.includes(location) }"
-                                                            @click="toggleTag('locations', location)">
-                                                            {{ location }}
+                                                            v-for="tag in getAllTags('locations')" 
+                                                            :key="getTagKey(tag)"
+                                                            class="tag tag-with-emoji"
+                                                            :class="{ selected: nodeData.locations.includes(getTagName(tag)) }"
+                                                            @click="toggleTag('locations', getTagName(tag))">
+                                                            <span class="tag-emoji">{{ getTagIcon(tag) }}</span>
+                                                            <span>{{ getTagName(tag) }}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1197,12 +1752,20 @@
                                             
                                             <!-- 预测控制按钮 -->
                                             <div class="prediction-controls" style="margin: 15px 0;">
-                                                <button 
-                                                    class="btn btn-primary" 
-                                                    @click="triggerPrediction" 
-                                                    :disabled="!hasAnyTagSelected">
-                                                    开始预测
-                                                </button>
+                                                <div>
+                                                    <button 
+                                                        class="btn btn-primary" 
+                                                        @click="triggerPrediction" 
+                                                        :disabled="!hasAnyTagSelected">
+                                                        开始预测
+                                                    </button>
+                                                    <button 
+                                                        class="btn-custom" 
+                                                        @click="openCustomPrediction" 
+                                                        v-if="hasAnyTagSelected">
+                                                        自定义内容
+                                                    </button>
+                                                </div>
                                                 <span v-if="!hasAnyTagSelected" class="empty-content-note">
                                                     请至少选择一个情绪标签
                                                 </span>
@@ -1236,6 +1799,7 @@
                                                             </button>
                                                         </span>
                                                         <button class="refresh-btn" @click="triggerPrediction">重新预测</button>
+                                                        <button class="btn-custom" @click="openCustomPrediction">自定义</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1284,12 +1848,20 @@
                                             
                                             <!-- 预测控制按钮 -->
                                             <div class="prediction-controls" style="margin: 15px 0;">
-                                                <button 
-                                                    class="btn btn-primary" 
-                                                    @click="triggerPrediction" 
-                                                    :disabled="!hasAnyTagSelected">
-                                                    开始预测
-                                                </button>
+                                                <div>
+                                                    <button 
+                                                        class="btn btn-primary" 
+                                                        @click="triggerPrediction" 
+                                                        :disabled="!hasAnyTagSelected">
+                                                        开始预测
+                                                    </button>
+                                                    <button 
+                                                        class="btn-custom" 
+                                                        @click="openCustomPrediction" 
+                                                        v-if="hasAnyTagSelected">
+                                                        自定义内容
+                                                    </button>
+                                                </div>
                                             </div>
                                             
                                             <!-- 预测加载状态 -->
@@ -1320,6 +1892,7 @@
                                                             </button>
                                                         </span>
                                                         <button class="refresh-btn" @click="triggerPrediction">重新预测</button>
+                                                        <button class="btn-custom" @click="openCustomPrediction">自定义</button>
                                                     </div>
                                                 </div>
                                                 
@@ -1412,6 +1985,176 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- 情绪选择弹窗 -->
+                                    <div class="modal emotion-selector-modal" v-if="showEmotionSelector">
+                                        <div class="modal-content emotion-selector-content">
+                                            <div class="modal-header">
+                                                <h3>选择情绪标签</h3>
+                                                <button class="close-btn" @click="closeEmotionSelector">×</button>
+                                            </div>
+                                            
+                                            <div class="emotion-categories">
+                                                <!-- 分类标签 -->
+                                                <div class="emotion-category-tabs">
+                                                    <button 
+                                                        v-for="(category, categoryName) in emotionCategories" 
+                                                        :key="categoryName"
+                                                        class="category-tab"
+                                                        :class="{ active: selectedCategory === categoryName }"
+                                                        :style="{ borderColor: category.color }"
+                                                        @click="selectedCategory = categoryName">
+                                                        <span class="category-icon">{{ category.icon }}</span>
+                                                        {{ categoryName }}
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- 当前分类的详细情绪 -->
+                                                <div class="detailed-emotions" v-if="selectedCategory">
+                                                    <div class="emotions-grid">
+                                                        <div 
+                                                            v-for="emotion in emotionCategories[selectedCategory].emotions" 
+                                                            :key="emotion.name"
+                                                            class="emotion-item"
+                                                            :class="{ selected: nodeData.emotions.includes(emotion.name) }"
+                                                            @click="toggleEmotionTag(emotion.name)">
+                                                            <span class="emotion-icon">{{ emotion.icon }}</span>
+                                                            <span class="emotion-name">{{ emotion.name }}</span>
+                                                        </div>
+                                                        
+                                                        <!-- 自定义情绪标签 -->
+                                                        <div 
+                                                            v-for="emotion in getCustomEmotions()"
+                                                            :key="emotion.id"
+                                                            class="emotion-item"
+                                                            :class="{ selected: nodeData.emotions.includes(emotion.name) }"
+                                                            @click="toggleEmotionTag(emotion.name)">
+                                                            <span class="emotion-icon">{{ emotion.icon }}</span>
+                                                            <span class="emotion-name">{{ emotion.name }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="selected-emotions-summary" v-if="nodeData.emotions.length > 0">
+                                                <h4>已选择的情绪:</h4>
+                                                <div class="selected-emotions-list">
+                                                    <span 
+                                                        v-for="emotion in nodeData.emotions" 
+                                                        :key="emotion"
+                                                        class="selected-emotion-tag">
+                                                        {{ getEmotionIcon(emotion) }} {{ emotion }}
+                                                        <button class="remove-emotion" @click.stop="removeEmotion(emotion)">×</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="modal-actions">
+                                                <button class="btn btn-primary" @click="closeEmotionSelector">确认选择</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 自定义预测弹窗 -->
+                                    <div class="modal" v-if="showCustomInput">
+                                        <div class="modal-content">
+                                            <h3>自定义预测内容</h3>
+                                            <p style="color: #6c757d; margin-bottom: 10px;">当系统预测的内容不符合需求时，您可以在这里输入自定义内容</p>
+                                            <div class="form-row">
+                                                <textarea 
+                                                    v-model="customPrediction" 
+                                                    placeholder="请输入自定义的预测内容..."
+                                                    rows="3"
+                                                    class="comment-textarea">
+                                                </textarea>
+                                            </div>
+                                            <div class="modal-actions">
+                                                <button class="btn btn-primary" @click="saveCustomPrediction">保存</button>
+                                                <button class="btn" @click="cancelCustomPrediction">取消</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 标签管理弹窗 -->
+                                    <div class="modal" v-if="showTagManager">
+                                        <div class="modal-content tag-manager-content">
+                                            <div class="modal-header">
+                                                <h3>标签管理</h3>
+                                                <button class="close-btn" @click="closeTagManager">×</button>
+                                            </div>
+                                            
+                                            <div class="tag-manager-tabs">
+                                                <button 
+                                                    v-for="tab in tagManagerTabs" 
+                                                    :key="tab.id"
+                                                    class="tag-tab"
+                                                    :class="{ active: currentTagTab === tab.id }"
+                                                    @click="currentTagTab = tab.id">
+                                                    {{ tab.name }}
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="tag-manager-content">
+                                                <div class="tag-manager-header">
+                                                    <h4>{{ getCurrentTabName() }} 标签</h4>
+                                                    <div class="tag-add-form">
+                                                        <input 
+                                                            type="text" 
+                                                            v-model="newTagName" 
+                                                            placeholder="输入新标签名称" 
+                                                            class="tag-input"
+                                                            @keyup.enter="addNewTag" />
+                                                        <button class="btn btn-primary btn-sm" @click="addNewTag">添加</button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="system-tags-section" v-if="getSystemTags().length > 0">
+                                                    <h5>系统标签</h5>
+                                                    <div class="tag-list">
+                                                        <div 
+                                                            v-for="tag in getSystemTags()" 
+                                                            :key="getTagKey(tag)"
+                                                            class="tag-item system-tag">
+                                                            <span class="tag-icon">{{ getTagIcon(tag) }}</span>
+                                                            <span class="tag-name">{{ getTagName(tag) }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="custom-tags-section">
+                                                    <h5>自定义标签</h5>
+                                                    <div class="tag-list" v-if="getCustomTags().length > 0">
+                                                        <div 
+                                                            v-for="tag in getCustomTags()" 
+                                                            :key="tag.id"
+                                                            class="tag-item custom-tag">
+                                                            <span class="tag-icon">{{ tag.icon }}</span>
+                                                            <span class="tag-name" v-if="editingTagId !== tag.id">{{ tag.name }}</span>
+                                                            <input 
+                                                                v-else
+                                                                type="text"
+                                                                v-model="editingTagName"
+                                                                class="tag-edit-input"
+                                                                @keyup.enter="saveTagEdit"
+                                                                @blur="saveTagEdit"
+                                                                ref="tagEditInput" />
+                                                            <div class="tag-actions">
+                                                                <button class="tag-btn edit" @click="startTagEdit(tag)">✏️</button>
+                                                                <button class="tag-btn delete" @click="removeTag(tag)">🗑️</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div v-else class="no-custom-tags">
+                                                        尚未添加自定义标签，使用上方输入框添加
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="modal-actions">
+                                                <button class="btn btn-primary" @click="closeTagManager">完成</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <!-- 右侧面板：事件流与预览 -->
@@ -1490,6 +2233,10 @@
                     const isPredicting = ref(false);
                     const predictionMode = ref('ai');
                     
+                    // 情绪选择器状态
+                    const showEmotionSelector = ref(false);
+                    const selectedCategory = ref('愤怒'); // 默认选择愤怒类别
+                    
                     // 客户管理
                     const clients = ref([]);
                     const editingClient = ref(null);
@@ -1524,6 +2271,35 @@
                         predictions.value.push([]);
                     }
                     
+                    // 添加自定义预测相关状态
+                    const showCustomInput = ref(false);
+                    const customPrediction = ref('');
+                    
+                    // 标签管理相关状态
+                  // 标签管理相关状态
+const showTagManager = ref(false);
+const currentTagTab = ref('people'); // 默认选中人物标签而不是情绪标签
+const newTagName = ref('');
+const editingTagId = ref(null);
+const editingTagName = ref('');
+
+                    
+                    // 自定义标签存储
+                    const customTags = ref({
+                        emotions: [],  // 自定义情绪标签
+                        people: [],    // 自定义人物标签
+                        times: [],     // 自定义时间标签
+                        locations: []  // 自定义地点标签
+                    });
+                    
+                    // 标签管理选项卡
+                    const tagManagerTabs = [
+                   
+                        { id: 'people', name: '人物标签' },
+                        { id: 'times', name: '时间标签' },
+                        { id: 'locations', name: '地点标签' }
+                    ];
+                    
                     // 计算属性
                     const clientSessions = computed(() => {
                         if (!currentClient.value) return [];
@@ -1536,6 +2312,10 @@
                             nodeData.people.length > 0 || 
                             nodeData.times.length > 0 || 
                             nodeData.locations.length > 0;
+                    });
+                    
+                    const emotionCategories = computed(() => {
+                        return EMOTION_CATEGORIES;
                     });
                     
                     // API配置
@@ -1964,6 +2744,81 @@
                         console.log("更新后的预测路径:", nodeData.levels);
                     }
                     
+                    // 打开情绪选择器
+                    function openEmotionSelector() {
+                        showEmotionSelector.value = true;
+                    }
+
+                    // 关闭情绪选择器
+                    function closeEmotionSelector() {
+                        showEmotionSelector.value = false;
+                    }
+
+                    // 切换情绪标签
+                    function toggleEmotionTag(emotion) {
+                        const index = nodeData.emotions.indexOf(emotion);
+                        if (index === -1) {
+                            nodeData.emotions.push(emotion);
+                        } else {
+                            nodeData.emotions.splice(index, 1);
+                        }
+                    }
+
+                    // 移除情绪标签
+                    function removeEmotion(emotion) {
+                        const index = nodeData.emotions.indexOf(emotion);
+                        if (index !== -1) {
+                            nodeData.emotions.splice(index, 1);
+                        }
+                    }
+
+                    // 获取情绪对应的emoji图标
+                    function getEmotionIcon(emotionName) {
+                        // 首先检查自定义情绪标签
+                        const customEmotion = customTags.value.emotions.find(e => e.name === emotionName);
+                        if (customEmotion) {
+                            return customEmotion.icon;
+                        }
+                        
+                        // 然后检查系统情绪标签
+                        for (const categoryName in EMOTION_CATEGORIES) {
+                            const category = EMOTION_CATEGORIES[categoryName];
+                            const found = category.emotions.find(e => e.name === emotionName);
+                            if (found) {
+                                return found.icon;
+                            }
+                        }
+                        return '😐'; // 默认图标
+                    }
+                    
+                    // 获取自定义情绪标签
+                    function getCustomEmotions() {
+                        return customTags.value.emotions;
+                    }
+                    
+                    // 打开自定义预测输入框
+                    function openCustomPrediction() {
+                        showCustomInput.value = true;
+                        customPrediction.value = '';
+                    }
+
+                    // 保存自定义预测
+                    function saveCustomPrediction() {
+                        if (customPrediction.value.trim()) {
+                            selectPrediction(currentStep.value - 1, customPrediction.value.trim());
+                            showCustomInput.value = false;
+                            customPrediction.value = '';
+                        } else {
+                            alert('请输入自定义内容');
+                        }
+                    }
+
+                    // 取消自定义预测
+                    function cancelCustomPrediction() {
+                        showCustomInput.value = false;
+                        customPrediction.value = '';
+                    }
+                    
                     // 切换标签
                     function toggleTag(type, value) {
                         const array = nodeData[type];
@@ -2096,6 +2951,235 @@
                                 console.error("生成分析失败:", error);
                                 currentSession.value.analysis.aiAnalysisText = "生成分析失败，请重试。";
                             }
+                        }
+                    }
+                    
+                    // 随机emoji生成函数
+                    function getRandomEmoji() {
+                        const emojis = [
+                            '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+                            '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+                            '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+                            '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+                            '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+                            '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+                            '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+                            '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+                            '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈'
+                        ];
+                        
+                        return emojis[Math.floor(Math.random() * emojis.length)];
+                    }
+
+                    // 添加新的自定义标签
+                    function addCustomTag(category, tagName) {
+                        // 检查是否已存在
+                        if (customTags.value[category].find(tag => tag.name === tagName)) {
+                            alert('该标签已存在！');
+                            return false;
+                        }
+                        
+                        // 还要检查系统标签中是否已存在
+                        let systemTagExists = false;
+                        if (category === 'emotions') {
+                            for (const categoryName in EMOTION_CATEGORIES) {
+                                if (EMOTION_CATEGORIES[categoryName].emotions.some(e => e.name === tagName)) {
+                                    systemTagExists = true;
+                                    break;
+                                }
+                            }
+                        } else if (category === 'people') {
+                            systemTagExists = PERSON_TAGS.some(tag => 
+                                (typeof tag === 'string' && tag === tagName) || 
+                                (typeof tag === 'object' && tag.name === tagName)
+                            );
+                        } else if (category === 'times') {
+                            systemTagExists = TIME_TAGS.some(tag => 
+                                (typeof tag === 'string' && tag === tagName) || 
+                                (typeof tag === 'object' && tag.name === tagName)
+                            );
+                        } else if (category === 'locations') {
+                            systemTagExists = LOCATION_TAGS.some(tag => 
+                                (typeof tag === 'string' && tag === tagName) || 
+                                (typeof tag === 'object' && tag.name === tagName)
+                            );
+                        }
+                        
+                        if (systemTagExists) {
+                            alert('该标签已存在于系统标签中！');
+                            return false;
+                        }
+                        
+                        // 创建新标签对象
+                        const newTag = {
+                            id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+                            name: tagName,
+                            icon: getRandomEmoji(),
+                            custom: true  // 标记为自定义标签
+                        };
+                        
+                        // 添加到相应分类
+                        customTags.value[category].push(newTag);
+                        saveCustomTagsToLocalStorage();
+                        return true;
+                    }
+
+                    // 编辑自定义标签
+                    function editCustomTag(category, tagId, newName) {
+                        const tagIndex = customTags.value[category].findIndex(tag => tag.id === tagId);
+                        if (tagIndex !== -1) {
+                            customTags.value[category][tagIndex].name = newName;
+                            saveCustomTagsToLocalStorage();
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    // 删除自定义标签
+                    function deleteCustomTag(category, tagId) {
+                        customTags.value[category] = customTags.value[category].filter(tag => tag.id !== tagId);
+                        saveCustomTagsToLocalStorage();
+                    }
+
+                    // 保存自定义标签到本地存储
+                    function saveCustomTagsToLocalStorage() {
+                        localStorage.setItem('counselingCustomTags', JSON.stringify(customTags.value));
+                    }
+
+                    // 从本地存储加载自定义标签
+                    function loadCustomTagsFromLocalStorage() {
+                        const savedTags = localStorage.getItem('counselingCustomTags');
+                        if (savedTags) {
+                            customTags.value = JSON.parse(savedTags);
+                        }
+                    }
+                    
+                    // 标签管理器相关函数
+                    // 打开标签管理器
+                    // 打开标签管理器
+function openTagManager(category) {
+    // 情绪标签不支持管理
+    if (category === 'emotions') {
+        return;
+    }
+    
+    currentTagTab.value = category;
+    newTagName.value = '';
+    editingTagId.value = null;
+    showTagManager.value = true;
+}
+
+
+                    // 关闭标签管理器
+                    function closeTagManager() {
+                        showTagManager.value = false;
+                    }
+
+                                    // 获取当前标签选项卡名称
+                                    function getCurrentTabName() {
+                        const tab = tagManagerTabs.find(t => t.id === currentTagTab.value);
+                        return tab ? tab.name : '';
+                    }
+
+                    // 获取系统标签
+                    function getSystemTags() {
+                        if (currentTagTab.value === 'emotions') {
+                            // 扁平化情绪分类
+                            return Object.values(EMOTION_CATEGORIES).reduce((acc, category) => {
+                                return acc.concat(category.emotions);
+                            }, []);
+                        } else if (currentTagTab.value === 'people') {
+                            return PERSON_TAGS;
+                        } else if (currentTagTab.value === 'times') {
+                            return TIME_TAGS;
+                        } else if (currentTagTab.value === 'locations') {
+                            return LOCATION_TAGS;
+                        }
+                        return [];
+                    }
+
+                    // 获取自定义标签
+                    function getCustomTags() {
+                        return customTags.value[currentTagTab.value] || [];
+                    }
+
+                    // 获取所有的标签（系统+自定义）
+                    function getAllTags(category) {
+                        const systemTags = category === 'emotions' 
+                            ? Object.values(EMOTION_CATEGORIES).reduce((acc, cat) => acc.concat(cat.emotions), [])
+                            : category === 'people' 
+                                ? PERSON_TAGS 
+                                : category === 'times' 
+                                    ? TIME_TAGS 
+                                    : LOCATION_TAGS;
+                        
+                        const custom = customTags.value[category] || [];
+                        return [...systemTags, ...custom];
+                    }
+
+                    // 获取标签图标
+                    function getTagIcon(tag) {
+                        if (typeof tag === 'string') {
+                            // 为字符串类型的标签返回默认图标
+                            if (currentTagTab.value === 'people') return '👤';
+                            if (currentTagTab.value === 'times') return '🕒';
+                            if (currentTagTab.value === 'locations') return '📍';
+                            return '🏷️';
+                        }
+                        return tag.icon || '🏷️';
+                    }
+
+                    // 获取标签名称
+                    function getTagName(tag) {
+                        return typeof tag === 'string' ? tag : tag.name;
+                    }
+
+                    // 获取标签的唯一键
+                    function getTagKey(tag) {
+                        if (typeof tag === 'string') return tag;
+                        return tag.id || tag.name;
+                    }
+
+                    // 添加新标签
+                    function addNewTag() {
+                        if (!newTagName.value.trim()) {
+                            alert('请输入标签名称！');
+                            return;
+                        }
+                        
+                        const success = addCustomTag(currentTagTab.value, newTagName.value.trim());
+                        if (success) {
+                            newTagName.value = '';
+                        }
+                    }
+
+                    // 开始编辑标签
+                    function startTagEdit(tag) {
+                        editingTagId.value = tag.id;
+                        editingTagName.value = tag.name;
+                        // 使用nextTick确保在DOM更新后获取焦点
+                        nextTick(() => {
+                            const input = document.querySelector('.tag-edit-input');
+                            if (input) {
+                                input.focus();
+                            }
+                        });
+                    }
+
+                    // 保存标签编辑
+                    function saveTagEdit() {
+                        if (editingTagId.value) {
+                            if (editingTagName.value.trim()) {
+                                editCustomTag(currentTagTab.value, editingTagId.value, editingTagName.value.trim());
+                            }
+                            editingTagId.value = null;
+                        }
+                    }
+
+                    // 删除标签
+                    function removeTag(tag) {
+                        if (confirm(`确定要删除标签 "${tag.name}" 吗？`)) {
+                            deleteCustomTag(currentTagTab.value, tag.id);
                         }
                     }
                     
@@ -2262,6 +3346,7 @@
                     function loadDataFromLocalStorage() {
                         const savedClients = localStorage.getItem('counselingClients');
                         const savedSessions = localStorage.getItem('counselingSessions');
+                        const savedTags = localStorage.getItem('counselingCustomTags');
                         
                         if (savedClients) {
                             clients.value = JSON.parse(savedClients);
@@ -2269,6 +3354,10 @@
                         
                         if (savedSessions) {
                             sessions.value = JSON.parse(savedSessions);
+                        }
+                        
+                        if (savedTags) {
+                            customTags.value = JSON.parse(savedTags);
                         }
                     }
                     
@@ -2323,11 +3412,40 @@
                         isPredicting,
                         predictionMode,
                         
-                        // 标签数据
+                        // 标签数据和管理
                         emotionTags: EMOTION_TAGS,
-                        personTags: PERSON_TAGS,
-                        timeTags: TIME_TAGS,
-                        locationTags: LOCATION_TAGS,
+                        emotionCategories,
+                        showEmotionSelector,
+                        selectedCategory,
+                        openEmotionSelector,
+                        closeEmotionSelector,
+                        toggleEmotionTag,
+                        removeEmotion,
+                        getEmotionIcon,
+                        getCustomEmotions,
+                        
+                        // 标签管理器状态
+                        showTagManager,
+                        currentTagTab,
+                        newTagName,
+                        editingTagId,
+                        editingTagName,
+                        tagManagerTabs,
+                        
+                        // 标签管理器方法
+                        openTagManager,
+                        closeTagManager,
+                        getCurrentTabName,
+                        getSystemTags,
+                        getCustomTags,
+                        getAllTags,
+                        getTagIcon,
+                        getTagName,
+                        getTagKey,
+                        addNewTag,
+                        startTagEdit,
+                        saveTagEdit,
+                        removeTag,
                         
                         // 数据状态
                         clients,
@@ -2345,6 +3463,13 @@
                         nodeData,
                         predictions,
                         hasAnyTagSelected,
+                        
+                        // 自定义预测相关
+                        showCustomInput,
+                        customPrediction,
+                        openCustomPrediction,
+                        saveCustomPrediction,
+                        cancelCustomPrediction,
                         
                         // 方法
                         getStepTitle,
@@ -2375,6 +3500,8 @@
                         
                         // 分析方法
                         generateAnalysis,
+                        
+                        // 评论相关
                         showCommentModal,
                         commentText,
                         editingNode,
